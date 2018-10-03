@@ -15,6 +15,7 @@ from util.util import rmdir, load_label
 class MultiLabelDataLoader():
     def __init__(self, opt):
         self.opt = opt
+        print(opt.dir + "/data.txt")
         assert os.path.exists(opt.dir + "/data.txt"), "No data.txt found in specified dir"
         assert os.path.exists(opt.dir + "/label.txt"), "No label.txt found in specified dir"
 

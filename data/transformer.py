@@ -41,10 +41,12 @@ def fix_box(box, width, height, ratio=-1, scale=1.0):
     if scale < 0:
         scale = 1.0
     box = copy.deepcopy(box)
-    w = box["w"]
-    h = box["h"]
-    x = box["x"] + w / 2
-    y = box["y"] + h / 2
+    # print(box)
+    # print(list(box.keys()))
+    w = box['box']["w"]
+    h = box['box']["h"]
+    x = box['box']["x"] + w / 2
+    y = box['box']["y"] + h / 2
     mw = 2 * min(x, width - x)
     mh = 2 * min(y, height - y)
     w = max(1, min(int(w * scale), mw))

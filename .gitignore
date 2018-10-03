@@ -11,3 +11,4 @@ run
 run_cam.py
 *.pyc
 .idea/
+train/
