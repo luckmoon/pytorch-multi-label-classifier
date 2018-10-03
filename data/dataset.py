@@ -13,6 +13,7 @@ class BaseDataset(data.Dataset):
         super(BaseDataset, self).__init__()
         self.opt = opt
         self.data_type = data_type
+        # [[image_file, box, id], [], [], []]
         self.dataset = self._load_data(opt.data_dir + '/' + data_type + '/data.txt')
         self.id2rid = id2rid
         self.data_size = len(self.dataset)

@@ -4,7 +4,6 @@ from build_model import LoadPretrainedModel
 
 __all__ = ['AlexNet', 'alexnet']
 
-
 model_urls = {
     'alexnet': 'https://download.pytorch.org/models/alexnet-owt-4df8aa71.pth',
 }
@@ -44,6 +43,7 @@ class AlexNet(nn.Module):
         x = x.view(x.size(0), 256 * 6 * 6)
         x = self.classifier(x)
         return x
+
 
 class AlexNetTemplet(nn.Module):
     def __init__(self, input_channel):
@@ -89,6 +89,7 @@ def alexnet(pretrained=False, **kwargs):
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['alexnet']))
     return model
+
 
 def AlexnetTemplet(input_channel, pretrained=False, **kwargs):
     r"""AlexNet model architecture from the

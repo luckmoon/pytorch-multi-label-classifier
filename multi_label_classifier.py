@@ -152,7 +152,7 @@ def train(model, criterion, train_set, val_set, opt, labels=None):
     # record forward and backward times 
     train_batch_num = len(train_set)
     total_batch_iter = 0
-    logging.info("####################Train Model###################")
+    logging.info("#################### Train Model ###################")
     for epoch in range(opt.sum_epoch):
         epoch_start_t = time.time()
         epoch_batch_iter = 0

@@ -14,40 +14,41 @@ class WebVisualizer():
         self.use_html = (opt.html and (opt.mode == "Train"))
         self.name = opt.name
         self.saved = False
-        self.type2id = {"Loss":0, "Accuracy": 1, "Other": 2}
+        self.type2id = {"Loss": 0, "Accuracy": 1, "Other": 2}
         self.phase2id = {"Train": 0, "Validate": 1, "Test": 2}
-        
+
         def ManualType():
             return collections.defaultdict(list)
-        # store all the points for regular backup 
+
+        # store all the points for regular backup
         self.plot_data = collections.defaultdict(ManualType)
         # line window info 
         self.win_info = collections.defaultdict(ManualType)
         if self.display_id > 0:
             import visdom
             self.vis = visdom.Visdom(port=opt.display_port)
-        
+
         if self.use_html:
             self.web_dir = os.path.join(opt.model_dir, "web")
             self.img_dir = os.path.join(opt.model_dir, "image")
-            print "Create web directory %s ..." %(self.web_dir)
+            print "Create web directory %s ..." % (self.web_dir)
             util.mkdirs([self.web_dir, self.img_dir])
-            
 
     def reset(self):
         self.saved = False
-    
+
     """
     type:  [Accuracy | Loss | Other]
     phase: [Train | Validate | Test]
     """
+
     def plot_points(self, x, y, data_type, phase):
         line_name = data_type + "@" + phase
-        self.plot_data[data_type][phase].append((x,y))
+        self.plot_data[data_type][phase].append((x, y))
         # draw ininial line objects if not initialized
         if len(self.win_info[data_type][phase]) == 0:
             for index in range(len(y)):
-                win_id = self.type2id[data_type]*len(y) + index
+                win_id = self.type2id[data_type] * len(y) + index
                 win = self.vis.line(X=np.array([0]),
                                     Y=np.array([0]),
                                     opts=dict(
@@ -60,15 +61,15 @@ class WebVisualizer():
                                     win=win_id,
                                     name=line_name)
                 self.win_info[data_type][phase].append(win)
-        
-        for index, value in enumerate(y): 
-            win_id = self.win_info[data_type][phase][index] 
+
+        for index, value in enumerate(y):
+            win_id = self.win_info[data_type][phase][index]
             self.vis.line(X=np.array([x]),
                           Y=np.array([value]),
                           win=win_id,
                           name=line_name,
                           update="append")
-    
+
     def plot_images(self, image_dict, start_display_id, epoch, save_result):
         if self.display_id > 0:  # show images in the browser
             ncols = self.opt.image_ncols

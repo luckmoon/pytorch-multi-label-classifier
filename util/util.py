@@ -105,3 +105,8 @@ def load_label(label_file):
             id2rid.append(id2rid_dict)
             rid2id.append(rid2id_dict)
     return rid2name, id2rid, rid2id
+
+
+if __name__ == '__main__':
+    _, _, rid2id = load_label('../test/mnist/label.txt')
+    print(rid2id)
