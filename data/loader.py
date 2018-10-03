@@ -3,23 +3,25 @@ import sys
 import json
 import random
 import logging
-import collections 
+import collections
 from torch.utils.data import DataLoader
 
 from dataset import BaseDataset
+
 sys.path.append('../')
 from util.util import rmdir, load_label
+
 
 class MultiLabelDataLoader():
     def __init__(self, opt):
         self.opt = opt
         assert os.path.exists(opt.dir + "/data.txt"), "No data.txt found in specified dir"
         assert os.path.exists(opt.dir + "/label.txt"), "No label.txt found in specified dir"
-        
+
         train_dir = opt.data_dir + "/TrainSet/"
         val_dir = opt.data_dir + "/ValidateSet/"
         test_dir = opt.data_dir + "/TestSet/"
-         
+
         # split data
         if not all([os.path.exists(train_dir), os.path.exists(val_dir), os.path.exists(test_dir)]):
             # rm existing directories
@@ -51,12 +53,12 @@ class MultiLabelDataLoader():
             self._WriteDataToFile(dataset["Train"], train_dir)
             self._WriteDataToFile(dataset["Validate"], val_dir)
             self._WriteDataToFile(dataset["Test"], test_dir)
-        
+
         self.rid2name, self.id2rid, self.rid2id = load_label(opt.dir + '/label.txt')
-        self.num_classes = [len(item)-2 for item in self.rid2name]
-        
+        self.num_classes = [len(item) - 2 for item in self.rid2name]
+
         # load dataset
-        if opt.mode == "Train": 
+        if opt.mode == "Train":
             logging.info("Load Train Dataset...")
             self.train_set = BaseDataset(self.opt, "TrainSet", self.rid2id)
             logging.info("Load Validate Dataset...")
@@ -72,29 +74,29 @@ class MultiLabelDataLoader():
         if self.opt.mode == "Train":
             return self._DataLoader(self.train_set)
         else:
-            raise("Train Set DataLoader NOT implemented in Test Mode")
+            raise ("Train Set DataLoader NOT implemented in Test Mode")
 
     def GetValSet(self):
         if self.opt.mode == "Train":
             return self._DataLoader(self.val_set)
         else:
-            raise("Validation Set DataLoader NOT implemented in Test Mode")
+            raise ("Validation Set DataLoader NOT implemented in Test Mode")
 
     def GetTestSet(self):
         if self.opt.mode == "Test":
             return self._DataLoader(self.test_set)
         else:
-            raise("Test Set DataLoader NOT implemented in Train Mode")
-    
+            raise ("Test Set DataLoader NOT implemented in Train Mode")
+
     def GetNumClasses(self):
         return self.num_classes
-    
+
     def GetRID2Name(self):
         return self.rid2name
-    
+
     def GetID2RID(self):
         return self.id2rid
-    
+
     def GetiRID2ID(self):
         return self.irid2id
 
@@ -106,8 +108,7 @@ class MultiLabelDataLoader():
             os.mkdir(dst_dir)
         with open(dst_dir + "/data.txt", 'w') as d:
             for line in src_data:
-                d.write(json.dumps(line, separators=(',',':'))+'\n')
-
+                d.write(json.dumps(line, separators=(',', ':')) + '\n')
 
     def _DataLoader(self, dataset):
         """
@@ -117,8 +118,7 @@ class MultiLabelDataLoader():
             dataset,
             batch_size=self.opt.batch_size,
             shuffle=self.opt.shuffle,
-            num_workers=int(self.opt.load_thread), 
+            num_workers=int(self.opt.load_thread),
             pin_memory=self.opt.cuda,
             drop_last=False)
         return dataloader
-
